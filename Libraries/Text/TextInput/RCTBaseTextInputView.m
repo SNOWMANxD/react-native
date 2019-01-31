@@ -217,6 +217,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   }
 }
 
+- (UIReturnKeyType)returnKeyType
+{
+  return self.backedTextInputView.returnKeyType;
+}
+
+- (void)setKeyboardType:(UIReturnKeyType)returnKeyType
+{
+  UIView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
+  if (textInputView.returnKeyType != returnKeyType) {
+    textInputView.returnKeyType = returnKeyType;
+    // Without the call to reloadInputViews, the keyboard will not change until the textview field (the first responder) loses and regains focus.
+    if (textInputView.isFirstResponder) {
+      [textInputView reloadInputViews];
+    }
+  }
+}
+
 #pragma mark - RCTBackedTextInputDelegate
 
 - (BOOL)textInputShouldBeginEditing
